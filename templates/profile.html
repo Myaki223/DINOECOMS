@@ -1,0 +1,100 @@
+{% extends 'partials/base-profile.html' %}
+{% load static %}
+
+{% block content %}
+    <!-- Navbar & Hero End -->
+            <div class="row justify-content-center py-5">
+                <div class="col-lg-10 pt-lg-5 mt-lg-5 text-center">
+                    <h1 class="display-3 mb-3 animated slideInDown">{{ user.first_name }} {{ user.last_name }}'s Cart</h1>
+                </div>
+            </div>
+
+    <!--TABLE PROFILE-->
+    <div class="container">
+      <div class="card-body p-0">
+          <div class="table-responsive">
+              <table class="table table-bordered table-sm m-0">
+                  <thead style="background-color: #dc3545; color: white;">
+                      <tr class="text-center">
+                          <th>Product Image</th>
+                          <th>Product Name</th>
+                          <th>Quantity</th>
+                          <th>Price</th>
+                          <th>Total Amount</th>
+                          <th>Actions</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      {% for user in shopping_cart_items %}
+                      <tr class="text-center align-middle">
+                          <td>
+                              <img src="{{ user.cart_item.image.url }}" style="max-width: 100px; max-height: 100px;">
+                          </td>
+                          <td>{{ user.cart_item.name }}</td>
+                          <td>{{ user.cart_item_quantity }}</td>
+                          <td>₱{{ user.cart_item.price }}</td>
+                          <td>₱{{ user.cart_item_total }}</td>
+                          <td>
+                              {% if user.cart_status == 3 %}
+                              <a href="#" class="text-decoration-none" style="color: rgb(25, 0, 255);">Completed</a>
+                              {% elif user.cart_status == 2 %}
+                              <span class="badge bg-warning text-dark">Processing</span>
+                              {% else %}
+                              <a href="#" class="text-decoration-none" style="color: rgb(0, 255, 42);" data-bs-toggle="modal" data-bs-target="#buyModal{{ user.cart_item.id }}">Purchase</a>
+                              {% endif %}
+                          </td>
+                      </tr>
+                      {% endfor %}
+                  </tbody>
+              </table>
+          </div>
+      </div>
+  </div>
+  
+  <!-- Modals -->
+  {% for user in shopping_cart_items %}
+  <div class="modal fade" id="buyModal{{ user.cart_item.id }}" tabindex="-1" aria-labelledby="buyModalLabel{{ user.cart_item.id }}" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+              <div class="modal-header bg-warning">
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body text-center">
+                  <p>Your order is already on its way. Thank you for shopping with us!</p>
+                  <img class="img-fluid mb-3" src="{{ user.cart_item.image.url }}" alt="{{ user.cart_item.name }}" style="height: 50%; width: 50%;">
+                  <p>PRODUCT NAME: {{ user.cart_item.name }}</p>
+                  <p>ITEM QUANTITY: {{ user.cart_item_quantity }}</p>
+                  <p>PRICE: ₱{{ user.cart_item.price }}</p>
+                  <p>TOTAL: ₱{{ user.cart_item_total }}</p>
+              </div>
+              <div class="modal-footer">
+                  <a href="{% url 'buy' shopping_cart_id=user.id %}" class="btn btn-danger">Close</a>
+              </div>
+          </div>
+      </div>
+  </div>
+  
+  <div class="modal fade" id="cancelModal{{ user.cart_item.id }}" tabindex="-1" aria-labelledby="cancelModalLabel{{ user.cart_item.id }}" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+              <div class="modal-header" style="background-color: #fa0000;">
+                  <h5 class="modal-title text-light" id="cancelModalLabel{{ user.cart_item.id }}">Remove My Order</h5>
+                  <button type="button" class="btn-close ms-auto" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                  <p>Confirm Remove This Item?</p>
+              </div>
+              <div class="modal-footer">
+                  <a href="{% url 'cancel' shopping_cart_id=user.id %}" class="btn btn-danger">Remove Item</a>
+              </div>
+          </div>
+      </div>
+  </div>
+  {% endfor %}
+  
+          
+     
+  
+  
+
+{% endblock %}

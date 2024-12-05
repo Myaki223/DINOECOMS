@@ -1,0 +1,10 @@
+.red-text {
+    color: red !important;
+}
+#content{
+    color: black !important;
+
+}
+.navbar-nav{
+    background-image: url(/static/image/herobanner.png) !important;
+}
